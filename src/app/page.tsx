@@ -22,6 +22,14 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
   const loginInputRef = useRef<HTMLInputElement>(null);
   const [storedCommand, setStoredCommand] = useState("");
+  
+  // Store markdown content
+  const [aboutContent, setAboutContent] = useState("");
+  const [skillsContent, setSkillsContent] = useState("");
+  const [experienceContent, setExperienceContent] = useState("");
+  const [projectsContent, setProjectsContent] = useState("");
+  const [contactContent, setContactContent] = useState("");
+  const [contentLoading, setContentLoading] = useState(true);
 
   useEffect(() => {
     if (terminalRef.current) {
@@ -34,6 +42,67 @@ export default function Home() {
       loginInputRef.current.focus();
     }
   }, [commandHistory, loggedIn]);
+  
+  // Add click-anywhere-to-focus behavior
+  useEffect(() => {
+    const handleClick = () => {
+      if (inputRef.current && loggedIn) {
+        inputRef.current.focus();
+      } else if (loginInputRef.current && !loggedIn) {
+        loginInputRef.current.focus();
+      }
+    };
+    
+    document.addEventListener('click', handleClick);
+    
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [loggedIn]);
+  
+  // Load markdown content from API
+  useEffect(() => {
+    const fetchContent = async (file: string) => {
+      try {
+        const response = await fetch(`/api/content?file=${file}`);
+        if (response.ok) {
+          const data = await response.json();
+          return data.content;
+        }
+        return `Error loading ${file}`;
+      } catch (error) {
+        console.error(`Error fetching ${file}:`, error);
+        return `Failed to load ${file}`;
+      }
+    };
+    
+    const loadAllContent = async () => {
+      setContentLoading(true);
+      try {
+        const [about, skills, experience, projects, contact] = await Promise.all([
+          fetchContent('about.md'),
+          fetchContent('skills.md'),
+          fetchContent('experience.md'),
+          fetchContent('projects.md'),
+          fetchContent('contact.md')
+        ]);
+        
+        setAboutContent(about);
+        setSkillsContent(skills);
+        setExperienceContent(experience);
+        setProjectsContent(projects);
+        setContactContent(contact);
+      } catch (error) {
+        console.error('Failed to load content:', error);
+      } finally {
+        setContentLoading(false);
+      }
+    };
+    
+    if (loggedIn) {
+      loadAllContent();
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     if (loggedIn) {
@@ -78,157 +147,131 @@ export default function Home() {
               <li><strong>experience</strong> - View work experience</li>
               <li><strong>projects</strong> - View notable projects</li>
               <li><strong>contact</strong> - Contact information</li>
-              <li><strong>pwd</strong> - Display current URL path</li>
-              <li><strong>date</strong> - Show current date and time</li>
-              <li><strong>clear</strong> - Clear the terminal</li>
-              <li><strong>help</strong> - Show this help message</li>
+             <li><strong>help</strong> - Show this help message</li>
             </ul>
           </div>
         );
         break;
 
       case "about":
-        result = (
-          <div className="space-y-2">
-            <p>Hello! I'm <strong>Nimisha G J</strong>, a software developer with 1 year of experience.</p>
-            <p>I'm currently working on observability solutions at Infraspec, helping companies monitor and understand their systems better.</p>
-            <p>I'm passionate about building robust backend systems and cloud infrastructure.</p>
-            <p>When I'm not coding, you'll find me exploring the outdoors through trekking, traveling, and bike riding. As a computer science engineering student, I'm on a continuous journey to expand my knowledge and contribute to the ever-evolving tech landscape. Let's connect and build something incredible together!</p>
-          </div>
-        );
+        if (contentLoading) {
+          result = "Loading about content...";
+        } else {
+          const formattedContent = aboutContent
+            .replace(/##\s+(.+)$/gm, '<h2 class="text-[#ffcc00] font-bold mb-2">$1</h2>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          
+          result = (
+            <div className="space-y-2 whitespace-pre-line">
+              <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
+            </div>
+          );
+        }
         break;
 
       case "skills":
-        result = (
-          <div className="space-y-3">
-            <div>
-              <p className="text-[#ffcc00] font-bold">Languages:</p>
-              <p>JavaScript, TypeScript, Python, Go, C++, Java, Ruby</p>
+        if (contentLoading) {
+          result = "Loading skills content...";
+        } else {
+          const formattedContent = skillsContent
+            .replace(/##\s+(.+)$/gm, '<h2 class="text-[#ffcc00] font-bold mb-2">$1</h2>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          
+          result = (
+            <div className="space-y-2 whitespace-pre-line">
+              <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
             </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Frontend:</p>
-              <p>HTML, CSS, React, Svelte, Next.js</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Backend:</p>
-              <p>Express, FastAPI, Rails, BentoML</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Databases:</p>
-              <p>MySQL, PostgreSQL, ClickHouse, Redis</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">DevOps & Cloud:</p>
-              <p>Docker, Kubernetes, AWS (ECS, EKS, EC2, VPC, S3, CloudWatch), Linux</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Observability:</p>
-              <p>OpenTelemetry, FluentBit, Jaeger, Grafana, Prometheus</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Others:</p>
-              <p>Figma, Jest, RabbitMQ</p>
-            </div>
-          </div>
-        );
+          );
+        }
         break;
 
       case "experience":
-        result = (
-          <div className="space-y-4">
-            <div>
-              <p className="text-[#ffcc00] font-bold">Software Engineer at Infraspec (July 2024 - Present)</p>
-              <p>• Working on observability solutions</p>
-              <p>• Created a payout management system from scratch</p>
-              <p>• Implemented a complete EKS setup with ingress controller</p>
-              <p>• Extensive work on Go backend</p>
-              <p>• Set up complete observability for company clients</p>
+        if (contentLoading) {
+          result = "Loading experience content...";
+        } else {
+          const formattedContent = experienceContent
+            .replace(/##\s+(.+)$/gm, '<h2 class="text-[#ffcc00] font-bold mb-2">$1</h2>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/•\s+(.+)$/gm, '<li>$1</li>');
+          
+          result = (
+            <div className="space-y-2 whitespace-pre-line">
+              <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
             </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Software Development Intern at Infraspec (January 2024 - April 2024)</p>
-              <p>• Developed an expense management application using Rails</p>
-              <p>• Configured netbooting for Raspberry Pi</p>
-              <p>• Set up ECS infrastructure</p>
-            </div>
-          </div>
-        );
+          );
+        }
         break;
 
       case "projects":
-        result = (
-          <div className="space-y-4">
-            <div>
-              <p className="text-[#ffcc00] font-bold">Payout Management System (Infraspec)</p>
-              <p>Developed a system from scratch to handle and automate payment distributions.</p>
+        if (contentLoading) {
+          result = "Loading projects content...";
+        } else {
+          const formattedContent = projectsContent
+            .replace(/##\s+(.+)$/gm, '<h2 class="text-[#ffcc00] font-bold mb-2">$1</h2>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          
+          result = (
+            <div className="space-y-2 whitespace-pre-line">
+              <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
             </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Kubernetes Infrastructure (Infraspec)</p>
-              <p>Implemented a complete EKS setup with ingress controller for robust containerized applications.</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Expense Management Application (Infraspec Internship)</p>
-              <p>Built a Rails-based expense tracking application for my company that streamlines the expense report process.</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Raspberry Pi Netboot Configuration (Infraspec Internship)</p>
-              <p>Set up a network boot solution for Raspberry Pi devices to enable diskless booting.</p>
-            </div>
-            <div>
-              <p className="text-[#ffcc00] font-bold">Client Observability Platform</p>
-              <p>Helped clients set up comprehensive observability solutions to monitor their applications.</p>
-            </div>
-          </div>
-        );
+          );
+        }
         break;
 
       case "contact":
-        result = (
-          <div className="space-y-2">
-            <p>Contact Information:</p>
-            <div className="pl-4 space-y-2 font-mono">
-              <div>
-                <span className="text-[#ffcc00]">$ </span>
-                <span>GitHub: </span>
-                <a 
-                  href="https://github.com/nimishgj" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-[#33ff33] hover:underline"
-                >
-                  https://github.com/nimishgj
-                </a>
-              </div>
-              <div>
-                <span className="text-[#ffcc00]">$ </span>
-                <span>LinkedIn: </span>
-                <a 
-                  href="https://linkedin.com/in/nimishagj" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-[#33ff33] hover:underline"
-                >
-                  https://linkedin.com/in/nimishagj
-                </a>
-              </div>
-              <div>
-                <span className="text-[#ffcc00]">$ </span>
-                <span>Email: </span>
-                <a 
-                  href="mailto:nimishgj444@gmail.com" 
-                  className="text-[#33ff33] hover:underline"
-                >
-                  nimishgj444@gmail.com
-                </a>
-              </div>
+        if (contentLoading) {
+          result = "Loading contact content...";
+        } else {
+          const formattedContent = contactContent
+            .replace(/##\s+(.+)$/gm, '<h2 class="text-[#ffcc00] font-bold mb-2">$1</h2>')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            // For contact links with $ prefix
+            .replace(/\$\s+([^:]+):\s+([^\n]+)/g, 
+              '<div><span class="text-[#ffcc00]">$</span> <span>$1:</span> <a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#33ff33] hover:underline">$2</a></div>');
+          
+          result = (
+            <div className="space-y-2 whitespace-pre-line">
+              <div dangerouslySetInnerHTML={{ __html: formattedContent }} />
             </div>
-          </div>
-        );
+          );
+        }
         break;
 
       case "clear":
         setCommandHistory([]);
         setCurrentCommand("");
         return;
+        
+      case "cat":
+        const fileToShow = commandParts[1];
+        
+        if (!fileToShow) {
+          result = "cat: missing file operand";
+        } else {
+          let content = "";
+          
+          if (fileToShow === "about" && !contentLoading) {
+            content = aboutContent;
+          } else if (fileToShow === "skills" && !contentLoading) {
+            content = skillsContent;
+          } else if (fileToShow === "experience" && !contentLoading) {
+            content = experienceContent;
+          } else if (fileToShow === "projects" && !contentLoading) {
+            content = projectsContent;
+          } else if (fileToShow === "contact" && !contentLoading) {
+            content = contactContent;
+          } else {
+            result = `cat: ${fileToShow}: No such file or directory`;
+            break;
+          }
+          
+          if (contentLoading) {
+            result = "Loading file content...";
+          } else {
+            result = <div className="whitespace-pre-wrap font-mono">{content}</div>;
+          }
+        }
+        break;
         
       case "pwd":
         result = typeof window !== "undefined" ? window.location.href : "Browser environment not available";
@@ -327,11 +370,10 @@ export default function Home() {
               wrapper="div"
               cursor={true}
               speed={50}
-              className="mb-4"
             />
           ) : (
             <>
-              <div className="mb-4">
+              <div className="mb-4 welcome-message">
                 <p>Hello {userName}! Welcome to Nimisha G J's terminal portfolio</p>
                 <p>Type 'help' to see available commands</p>
               </div>
