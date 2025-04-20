@@ -60,38 +60,20 @@ export default function Home() {
     };
   }, [loggedIn]);
   
-  // Load markdown content from API
+  // Load markdown content from static JSON
   useEffect(() => {
-    const fetchContent = async (file: string) => {
-      try {
-        const response = await fetch(`/api/content?file=${file}`);
-        if (response.ok) {
-          const data = await response.json();
-          return data.content;
-        }
-        return `Error loading ${file}`;
-      } catch (error) {
-        console.error(`Error fetching ${file}:`, error);
-        return `Failed to load ${file}`;
-      }
-    };
-    
-    const loadAllContent = async () => {
+    const loadStaticContent = async () => {
       setContentLoading(true);
       try {
-        const [about, skills, experience, projects, contact] = await Promise.all([
-          fetchContent('about.md'),
-          fetchContent('skills.md'),
-          fetchContent('experience.md'),
-          fetchContent('projects.md'),
-          fetchContent('contact.md')
-        ]);
+        // Import static content
+        const staticContent = await import('../data/content.json');
         
-        setAboutContent(about);
-        setSkillsContent(skills);
-        setExperienceContent(experience);
-        setProjectsContent(projects);
-        setContactContent(contact);
+        setAboutContent(staticContent.about);
+        setSkillsContent(staticContent.skills);
+        setExperienceContent(staticContent.experience);
+        setProjectsContent(staticContent.projects);
+        setContactContent(staticContent.contact);
+        console.log('Static content loaded successfully');
       } catch (error) {
         console.error('Failed to load content:', error);
       } finally {
@@ -100,7 +82,7 @@ export default function Home() {
     };
     
     if (loggedIn) {
-      loadAllContent();
+      loadStaticContent();
     }
   }, [loggedIn]);
 
