@@ -178,45 +178,44 @@ export default function Home() {
 
       case "contact":
         result = (
-          <div className="space-y-5">
-            <p className="text-xl">Feel free to connect with me:</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <a 
-                href="https://github.com/nimishgj" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center p-4 rounded-lg transition-all duration-300 bg-[#0d1117] border border-[#30363d] hover:border-[#58a6ff] hover:shadow-lg hover:scale-105"
-              >
-                <FaGithub className="text-2xl mr-3 text-white" />
-                <div>
-                  <div className="font-bold text-white">GitHub</div>
-                  <div className="text-sm text-gray-400">@nimishgj</div>
-                </div>
-              </a>
-              <a 
-                href="https://linkedin.com/in/nimishagj" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center p-4 rounded-lg transition-all duration-300 bg-[#0a66c2] border border-[#0a66c2] hover:bg-[#0077b5] hover:shadow-lg hover:scale-105"
-              >
-                <FaLinkedin className="text-2xl mr-3 text-white" />
-                <div>
-                  <div className="font-bold text-white">LinkedIn</div>
-                  <div className="text-sm text-gray-200">Connect Professionally</div>
-                </div>
-              </a>
-              <a 
-                href="mailto:nimishgj444@gmail.com" 
-                className="flex items-center p-4 rounded-lg transition-all duration-300 bg-[#ea4335] border border-[#ea4335] hover:bg-[#d93025] hover:shadow-lg hover:scale-105"
-              >
-                <FaEnvelope className="text-2xl mr-3 text-white" />
-                <div>
-                  <div className="font-bold text-white">Email</div>
-                  <div className="text-sm text-gray-200">nimishgj444@gmail.com</div>
-                </div>
-              </a>
+          <div className="space-y-2">
+            <p>Contact Information:</p>
+            <div className="pl-4 space-y-2 font-mono">
+              <div>
+                <span className="text-[#ffcc00]">$ </span>
+                <span>GitHub: </span>
+                <a 
+                  href="https://github.com/nimishgj" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-[#33ff33] hover:underline"
+                >
+                  https://github.com/nimishgj
+                </a>
+              </div>
+              <div>
+                <span className="text-[#ffcc00]">$ </span>
+                <span>LinkedIn: </span>
+                <a 
+                  href="https://linkedin.com/in/nimishagj" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-[#33ff33] hover:underline"
+                >
+                  https://linkedin.com/in/nimishagj
+                </a>
+              </div>
+              <div>
+                <span className="text-[#ffcc00]">$ </span>
+                <span>Email: </span>
+                <a 
+                  href="mailto:nimishgj444@gmail.com" 
+                  className="text-[#33ff33] hover:underline"
+                >
+                  nimishgj444@gmail.com
+                </a>
+              </div>
             </div>
-            <p className="mt-4 text-gray-400 italic">Let's build something amazing together!</p>
           </div>
         );
         break;
@@ -260,34 +259,33 @@ export default function Home() {
 
         <div ref={terminalRef} className="terminal-content h-[calc(100%-40px)] overflow-y-auto">
           {!loggedIn ? (
-            <div className="flex flex-col items-center justify-center h-full">
-              <div className="mb-4 text-center">
+            <div className="h-full p-4 flex flex-col justify-start">
+              <p className="text-[#33ff33] mb-1">Welcome to terminal v1.0.0</p>
+              <p className="text-[#cccccc] mb-4">Type your username to continue</p>
+              <div className="mb-6">
                 <TypeAnimation
                   sequence={[
-                    "Welcome to the terminal",
-                    1000,
-                    "Please enter your name to continue...",
+                    "$ whoami",
                   ]}
                   wrapper="div"
                   cursor={true}
                   speed={50}
-                  className="mb-4"
+                  className="text-[#ffcc00]"
                 />
               </div>
               <form onSubmit={handleLogin} className="flex items-center">
-                <span className="text-[#33ff33]">login:</span>
+                <span className="text-[#ffcc00]">$ </span>
+                <span className="text-[#33ff33] mr-2 ">name</span>
                 <input
                   ref={loginInputRef}
                   type="text"
                   value={loginName}
                   onChange={(e) => setLoginName(e.target.value)}
-                  className="command-input ml-2 px-2 border-b border-[#33ff33] bg-transparent"
+                  className="command-input ml-2 bg-transparent border-b border-[#333] focus:border-[#33ff33] outline-none"
                   autoFocus
-                  placeholder="Enter your name"
+                  placeholder="username"
+                  spellCheck="false"
                 />
-                <button type="submit" className="ml-2 text-[#33ff33] hover:text-white">
-                  ⏎
-                </button>
               </form>
             </div>
           ) : showWelcome ? (
