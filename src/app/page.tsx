@@ -57,9 +57,12 @@ export default function Home() {
     e.preventDefault();
     if (!currentCommand.trim()) return;
 
-    const command = currentCommand.trim().toLowerCase();
+    const fullCommand = currentCommand.trim();
+    const commandParts = fullCommand.split(' ');
+    const command = commandParts[0].toLowerCase();
+    
     // Add command to input history for arrow key navigation
-    setCommandInputHistory([command, ...commandInputHistory]);
+    setCommandInputHistory([fullCommand, ...commandInputHistory]);
     setHistoryIndex(-1);
     
     let result: React.ReactNode | string = "Command not found. Type 'help' for available commands.";
@@ -75,6 +78,8 @@ export default function Home() {
               <li><strong>experience</strong> - View work experience</li>
               <li><strong>projects</strong> - View notable projects</li>
               <li><strong>contact</strong> - Contact information</li>
+              <li><strong>pwd</strong> - Display current URL path</li>
+              <li><strong>date</strong> - Show current date and time</li>
               <li><strong>clear</strong> - Clear the terminal</li>
               <li><strong>help</strong> - Show this help message</li>
             </ul>
@@ -241,9 +246,30 @@ export default function Home() {
       case "whoami":
         result = userName || "Not logged in";
         break;
+        
+      case "ls":
+        result = (
+          <div className="font-mono">
+            <div className="text-[#33ff33]">about</div>
+            <div className="text-[#33ff33]">skills</div>
+            <div className="text-[#33ff33]">experience</div>
+            <div className="text-[#33ff33]">projects</div>
+            <div className="text-[#33ff33]">contact</div>
+          </div>
+        );
+        break;
+        
+      case "date":
+        result = new Date().toString();
+        break;
+        
+      case "echo":
+        const echoText = fullCommand.substring(fullCommand.indexOf(' ') + 1);
+        result = echoText || "";
+        break;
 
       default:
-        result = `Command not found: '${command}'. Type 'help' for available commands.`;
+        result = `Command not found: '${fullCommand}'. Type 'help' for available commands.`;
         break;
     }
 
@@ -278,16 +304,15 @@ export default function Home() {
                 />
               </div>
               <form onSubmit={handleLogin} className="flex items-center">
-                <span className="text-[#ffcc00]">$ </span>
-                <span className="text-[#33ff33] mr-2 ml-2">name</span>
+
                 <input
                   ref={loginInputRef}
                   type="text"
                   value={loginName}
                   onChange={(e) => setLoginName(e.target.value)}
-                  className="command-input ml-2 bg-transparent border-b border-[#333] focus:border-[#33ff33] outline-none"
+                  className="command-input ml-2 bg-transparent border-none outline-none text-white"
                   autoFocus
-                  placeholder="username"
+                  placeholder="guest"
                   spellCheck="false"
                 />
               </form>
