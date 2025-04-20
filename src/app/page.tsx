@@ -237,6 +237,10 @@ export default function Home() {
           result = "Cannot exit in current environment.";
         }
         break;
+        
+      case "whoami":
+        result = userName || "Not logged in";
+        break;
 
       default:
         result = `Command not found: '${command}'. Type 'help' for available commands.`;
@@ -275,7 +279,7 @@ export default function Home() {
               </div>
               <form onSubmit={handleLogin} className="flex items-center">
                 <span className="text-[#ffcc00]">$ </span>
-                <span className="text-[#33ff33] mr-2 ">name</span>
+                <span className="text-[#33ff33] mr-2 ml-2">name</span>
                 <input
                   ref={loginInputRef}
                   type="text"
