@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { TypeAnimation } from "react-type-animation";
-import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
+// Icons imported when needed
+// import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 
 type CommandResult = {
   command: string;
@@ -345,7 +346,7 @@ export default function Home() {
           ) : showWelcome ? (
             <TypeAnimation
               sequence={[
-                `Hello ${userName}! Welcome to Nimisha G J's portfolio`,
+                `Hello ${userName}! Welcome to Nimisha G J&apos;s portfolio`,
                 1000,
                 "Type 'help' to see available commands",
               ]}
@@ -356,8 +357,8 @@ export default function Home() {
           ) : (
             <>
               <div className="mb-4 welcome-message">
-                <p>Hello {userName}! Welcome to Nimisha G J's terminal portfolio</p>
-                <p>Type 'help' to see available commands</p>
+                <p>Hello {userName}! Welcome to Nimisha G J&apos;s terminal portfolio</p>
+                <p>Don&apos;t know what to do? Type &apos;help&apos; to see available commands.</p>
               </div>
 
               {commandHistory.map((item, index) => (

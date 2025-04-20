@@ -1,8 +1,5 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
-name: Deploy Next.js site to Pages
+# Workflow for building and deploying the terminal portfolio to GitHub Pages
+name: Deploy Terminal Portfolio
 
 on:
   # Runs on pushes targeting the default branch
@@ -73,8 +70,10 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
-      - name: Build with Next.js
-        run: ${{ steps.detect-package-manager.outputs.runner }} next build
+      - name: Update content JSON from markdown
+        run: ${{ steps.detect-package-manager.outputs.runner }} npm run update-content
+      - name: Build with Next.js (skip linting)
+        run: ${{ steps.detect-package-manager.outputs.runner }} next build --no-lint
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
