@@ -5,10 +5,11 @@
   "homepage": "https://nimishgj.github.io/portfolio",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "npm run update-content && next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build"
+    "export": "npm run update-content && next build",
+    "update-content": "node scripts/build-content.js"
   },
   "dependencies": {
     "fs": "^0.0.1-security",
