@@ -1,15 +1,124 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+  :root {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 90%;
+    --terminal-green: 120 100% 50%;
+    --terminal-border: 0 0% 20%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    /* JetBrains Mono font is loaded via Next.js font loader */
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.terminal {
+  background-color: #0d0d0d;
+  color: #33ff33;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 2px solid #1a1a1a;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  height: calc(100vh - 4rem);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #1a1a1a;
+  margin-bottom: 1rem;
+}
+
+.terminal-btn {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+}
+
+.close-btn {
+  background-color: rgb(239, 68, 68);
+}
+
+.minimize-btn {
+  background-color: rgb(234, 179, 8);
+}
+
+.maximize-btn {
+  background-color: rgb(34, 197, 94);
+}
+
+.cursor {
+  width: 0.5rem;
+  height: 1rem;
+  display: inline-block;
+  background-color: #33ff33;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.command-input {
+  background-color: transparent;
+  outline: none;
+  color: #33ff33;
+  width: 100%;
+  caret-color: #33ff33;
+}
+
+.command-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.command-prompt {
+  color: #33ff33;
+  white-space: nowrap;
+}
+
+.command-result {
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+  color: #cccccc;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  color: #ffcc00;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 @media (prefers-color-scheme: dark) {
