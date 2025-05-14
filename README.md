@@ -1,5 +1,7 @@
 # Terminal Portfolio Website
 
+> Demo at https://nimishgj.github.io/terminal-portfolio/
+
 A unique, interactive terminal-themed personal portfolio website built with Next.js, React, and TypeScript. This project creates an authentic command-line experience where visitors can navigate through different sections of the portfolio using familiar terminal commands.
 
 ![Terminal Portfolio Screenshot](https://via.placeholder.com/800x450/000000/33ff33?text=Terminal+Portfolio)
